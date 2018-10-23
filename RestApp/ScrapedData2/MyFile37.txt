@@ -1,0 +1,215 @@
+Generics
+
+Nested Classes Java Programming Generics Aggregate Navigate Classes and Objects topic: ( v • d • e ) Defining classes Inheritance Interfaces Overloading methods and constructors Object Lifecycle Scope Nested classes Generics Java is a strongly typed language, so a field in a class may be typed like this: Code listing 4.34: Repository.java  1 public class Repository {
+ 2 
+ 3    public Integer item;
+ 4 
+ 5    public Integer getItem() {
+ 6       return item;
+ 7    }
+ 8 
+ 9    public void setItem(Integer newItem) {
+10       item = newItem;
+11    }
+12 }
+ This ensures that, only Integer objects can be put in the field and a ClassCastException can't occur at runtime, only compile-time error can occur. Unfortunately, it can be used only with Integer objects. If you want to use the same class in another context with Strings, you have to generalize the type like this: Code listing 4.35: Repository.java  1 public class Repository {
+ 2 
+ 3    public Object item;
+ 4 
+ 5    public Object getItem() {
+ 6       return item;
+ 7    }
+ 8 
+ 9    public void setItem(Integer newItem) {
+10       item = newItem;
+11    }
+12 
+13    public void setItem(String newItem) {
+14       item = newItem;
+15    }
+16 }
+ But you will have ClassCastException at runtime again and you can't easily use your field. The solution is to use Generics. Generic class[edit] A generic class does not hard code the type of a field, a return value or a parameter. The class only indicates that a generic type should be the same, for a given object instance. The generic type is not specified in the class definition. It is specified during object instantiation. This allows the generic type to be different from an instance to another. So we should write our class this way: Code listing 4.36: Repository.java  1 public class Repository<T> {
+ 2 
+ 3    public T item;
+ 4 
+ 5    public T getItem() {
+ 6       return item;
+ 7    }
+ 8 
+ 9    public void setItem(T newItem) {
+10       item = newItem;
+11    }
+12 }
+ Here, the generic type is defined after the name of the class. Any new identifier can be chosen. Here, we have chosen T, which is the most common choice. The actual type is defined at the object instantiation: Code section 4.35: Instantiation. 1 Repository<Integer> arithmeticRepository = new Repository<Integer>();
+2 arithmeticRepository.setItem(new Integer(1));
+3 Integer number = arithmeticRepository.getItem();
+4 
+5 Repository<String> textualRepository = new Repository<String>();
+6 textualRepository.setItem("Hello!");
+7 String message = textualRepository.getItem();
+ Although each object instance has its own type, each object instance is still strongly typed: Code section 4.36: Compile error. 1 Repository<Integer> arithmeticRepository = new Repository<Integer>();
+2 arithmeticRepository.setItem("Hello!");
+ A class can define as many generic types as you like. Choose a different identifier for each generic type and separate them by a comma: Code listing 4.37: Repository.java  1 public class Repository<T, U> {
+ 2 
+ 3    public T item;
+ 4 
+ 5    public U anotherItem;
+ 6 
+ 7    public T getItem() {
+ 8       return item;
+ 9    }
+10 
+11    public void setItem(T newItem) {
+12       item = newItem;
+13    }
+14 
+15    public U getAnotherItem() {
+16       return anotherItem;
+17    }
+18 
+19    public void setAnotherItem(U newItem) {
+20       anotherItem = newItem;
+21    }
+22 }
+ When a type that is defined with generic (for example, Collection<T>) is not used with generics (for example, Collection) is called a raw type. Generic method[edit] A generic type can be defined for just a method: Code section 4.37: Generic method. 1 public <D> D assign(Collection<D> generic, D obj) {
+2   generic.add(obj);
+3   return obj;
+4 }
+ Here a new identifier (D) has been chosen at the beginning of the method declaration. The type is specific to a method call and different types can be used for the same object instance: Code section 4.38: Generic method call. 1 Collection<Integer> numbers = new ArrayList<Integer>();
+2 Integer number = assign(numbers, new Integer(1));
+3 Collection<String> texts = new ArrayList<String>();
+4 String text = assign(texts, "Store it.");
+ The actual type will be defined by the type of the method parameter. Hence, the generic type can't be defined only for the return value as it wouldn't be resolved. See the Class<T> section for a solution. Test your knowledge Question 4.8: Consider the following class. Question 4.8: Question8.java  1 public class Question8<T> {
+ 2   public T item;
+ 3  
+ 4   public T getItem() {
+ 5     return item;
+ 6   }
+ 7  
+ 8   public void setItem(T newItem) {
+ 9     item = newItem;
+10   }
+11 
+12   public static void main(String[] args) {
+13     Question8<String> aQuestion = new Question8<String>();
+14     aQuestion.setItem("Open your mind.");
+15     aQuestion.display(aQuestion.getItem());
+16   }
+17 
+18   public void display(String parameter) {
+19     System.out.println("Here is the text: " + parameter);
+20   }
+21 
+22   public void display(Integer parameter) {
+23     System.out.println("Here is the number: " + parameter);
+24   }
+25 
+26   public void display(Object parameter) {
+27     System.out.println("Here is the object: " + parameter);
+28   }
+29 }
+ What will be displayed on the console? Answer Console for Answer 4.8 Here is the text: Open your mind.
+ aQuestion.getItem() is typed as a string. Wildcard Types[edit] As we have seen above, generics give the impression that a new container type is created with each different type parameter. We have also seen that in addition to the normal type checking, the type parameter has to match as well when we assign generics variables. In some cases this is too restrictive. What if we would like to relax this additional checking? What if we would like to define a collection variable that can hold any generic collection, regardless of the parameter type it holds? The wildcard type is represented by the character <?>, and pronounced Unknown, or Any-Type. Any-Type can be expressed also by <? extends Object>. Any-Type includes Interfaces, not only Classes. So now we can define a collection whose element type matches anything. See below: Code section 4.39: Wildcard type. 1 Collection<?> collUnknown;
+ Upper bounded wildcards[edit] You can specify a restriction on the types of classes that may be used. For example, <? extends ClassName> only allows objects of class ClassName or a subclass. For example, to create a collection that may only contain "Serializable" objects, specify: Code section 4.40: Collection of serializable subobjects. 1 Collection<String> textColl = new ArrayList<String>();
+2 
+3 Collection<? extends Serializable> serColl = textColl;
+ The above code is valid because the String class is serializable. Use of a class that is not serializable would cause a compilation error. The added items can be retrieved as Serializable object. You can call methods of the Serializable interface or cast it to String. The following collection can only contain objects that extend the class Animal. Code listing 4.38: Dog.java 1 class Dog extends Animal {
+2 }
+ Code section 4.41: Example of subclass. 1 // Create "Animal Collection" variable
+2 Collection<? extends Animal> animalColl = new ArrayList<Dog>();
+ Lower bounded wildcards[edit] <? super ClassName> specifies a restriction on the types of classes that may be used. For example, to declare a Comparator that can compare Dogs, you use: Code section 4.42: Superclass. 1 Comparator<? super Dog> myComparator;
+ Now suppose you define a comparator that can compare Animals: Code section 4.43: Comparator. 1 class AnimalComparator implements Comparator<Animal> {
+2   int compare(Animal a, Animal b) {
+3    //...
+4   }
+5 }
+ Since Dogs are Animals, you can use this comparator to compare Dogs also. Comparators for any superclass of Dog can also compare Dog; but comparators for any strict subclass cannot. Code section 4.44: Generic comparator. 1 Comparator<Animal> myAnimalComparator = new AnimalComparator();
+2 
+3 static int compareTwoDogs(Comparator<? super Dog> comp, Dog dog1, Dog dog2) {
+4   return comp.compare(dog1, dog2);
+5 }
+ The above code is valid because the Animal class is a supertype of the Dog class. Use of a class that is not a supertype would cause a compilation error. Unbounded wildcard[edit] The advantage of the unbounded wildcard (i.e. <?>) compared to a raw type (i.e. without generic) is to explicitly say that the parameterized type is unknown, not any type. That way, all the operations that implies to know the type are forbidden to avoid unsafe operation. Consider the following code: Code section 4.45: Unsafe operation. 1 public void addAtBottom(Collection anyCollection) {
+2   anyCollection.add(new Integer(1));
+3 }
+ This code will compile but this code may corrupt the collection if the collection only contains strings: Code section 4.46: Corruption of list. 1 List<String> col = new ArrayList<String>();
+2 addAtBottom(col);
+3 col.get(0).endsWith(".");
+ Console for Code section 4.46 Exception in thread "main" java.lang.ClassCastException: java.lang.Integer incompatible with java.lang.String
+at Example.main(Example.java:17)
+ This situation could have been avoided if the addAtBottom(Collection) method was defined with an unbounded wildcard: addAtBottom(Collection<?>). With this signature, it is impossible to compile a code that is dependent of the parameterized type. Only independent methods of a collection (clear(), isEmpty(), iterator(), remove(Object o), size(), ...) can be called. For instance, addAtBottom(Collection<?>) could contain the following code: Code section 4.47: Safe operation. 1 public void addAtBottom(Collection<?> anyCollection) {
+2    Iterator<?> iterator = anyCollection.iterator();
+3    while (iterator.hasNext()) {
+4       System.out.print(iterator.next());
+5    }
+6 }
+ Class<T>[edit] Since Java 1.5, the class java.lang.Class is generic. It is an interesting example of using generics for something other than a container class. For example, the type of String.class is Class<String>, and the type of Serializable.class is Class<Serializable>. This can be used to improve the type safety of your reflection code. In particular, since the newInstance() method in Class now returns T, you can get more precise types when creating objects reflectively. Now we can use the newInstance() method to return a new object with exact type, without casting. An example with generics: Code section 4.48: Automatic cast.  1 Customer cust = Utility.createAnyObject(Customer.class);  // No casting
+ 2 ...
+ 3 public static <T> T createAnyObject(Class<T> cls) {
+ 4     T ret = null;
+ 5     try {
+ 6         ret = cls.newInstance();
+ 7     } catch (Exception e) {
+ 8         // Exception Handling
+ 9     }
+10     return ret;
+11 }
+ The same code without generics: Code section 4.49: Former version.  1 Customer cust = (Customer) Utility.createAnyObject(Customer.class);  // Casting is needed
+ 2 ...
+ 3 public static Object createAnyObject(Class cls) {
+ 4     Object ret = null;
+ 5     try {
+ 6         ret = cls.newInstance();
+ 7     } catch (Exception e) {
+ 8         // Exception Handling
+ 9     }
+10     return ret;
+11 }
+ Motivation[edit] Java was long criticized for the need to explicitly type-cast an element when it was taken out of a "container/collection" class. There was no way to enforce that a "collection" class contains only one type of object (e.g., to forbid at compile time that an Integer object is added to a Collection that should only contain Strings). This is possible since Java 1.5. In the first couple of years of Java evolution, Java did not have a real competitor. This has changed by the appearance of Microsoft C#. With Generics Java is better suited to compete against C#. Similar constructs to Java Generics exist in other languages, see Generic programming for more information. Generics were added to the Java language syntax in version 1.5. This means that code using Generics will not compile with Java 1.4 and less. Use of generics is optional. For backwards compatibility with pre-Generics code, it is okay to use generic classes without the generics type specification (<T>). In such a case, when you retrieve an object reference from a generic object, you will have to manually cast it from type Object to the correct type. Note for C++ programmers[edit] Java Generics are similar to C++ Templates in that both were added for the same reason. The syntax of Java Generic and C++ Template are also similar. There are some differences however. The C++ template can be seen as a kind of macro, in that a new copy of the code is generated for each generic type referenced. All extra code for templates is generated at compiler time. In contrast, Java Generics are built into the language. The same code is used for each generic type. For example: Code section 4.50: Java generics. 1 Collection<String>  collString  = new ArrayList<String>();
+2 Collection<Integer> collInteger = new ArrayList<Integer>();
+ Both these objects appear as the same type at runtime (both ArrayList's). The generic type information is erased during compilation (type erasure). For example: Code section 4.51: Type erasure. 1 public <T> void method(T argument) {
+2   T variable;
+3   …
+4 }
+ is transformed by erasure into: Code section 4.52: Transformation. 1 public void method(Object argument) {
+2   Object variable;
+3   …
+4 }
+ Test your knowledge Question 4.9: Consider the following class. Question 4.9: Question9.java  1 import java.util.ArrayList;
+ 2 import java.util.Collection;
+ 3 
+ 4 public class Question9 {
+ 5   public static void main(String[] args) {
+ 6     Collection<String> collection1 = new ArrayList<String>();
+ 7     Collection<? extends Object> collection2 = new ArrayList<String>();
+ 8     Collection<? extends String> collection3 = new ArrayList<String>();
+ 9     Collection<? extends String> collection4 = new ArrayList<Object>();
+10     Collection<? super Object> collection5 = new ArrayList<String>();
+11     Collection<? super Object> collection6 = new ArrayList<Object>();
+12     Collection<?> collection7 = new ArrayList<String>();
+13     Collection<? extends Object> collection8 = new ArrayList<?>();
+14     Collection<? extends Object> collection9 = new ArrayList<Object>();
+15     Collection<? extends Integer> collection10 = new ArrayList<String>();
+16     Collection<String> collection11 = new ArrayList<? extends String>();
+17     Collection collection12 = new ArrayList<String>();
+18   }
+19 }
+ Which lines will generate a compile error? Answer Answer 4.9: Answer9.java  1 import java.util.ArrayList;
+ 2 import java.util.Collection;
+ 3 
+ 4 public class Answer9 {
+ 5   public static void main(String[] args) {
+ 6     Collection<String> collection1 = new ArrayList<String>();
+ 7     Collection<? extends Object> collection2 = new ArrayList<String>();
+ 8     Collection<? extends String> collection3 = new ArrayList<String>();
+ 9     Collection<? extends String> collection4 = new ArrayList<Object>();
+10     Collection<? super Object> collection5 = new ArrayList<String>();
+11     Collection<? super Object> collection6 = new ArrayList<Object>();
+12     Collection<?> collection7 = new ArrayList<String>();
+13     Collection<? extends Object> collection8 = new ArrayList<?>();
+14     Collection<? extends Object> collection9 = new ArrayList<Object>();
+15     Collection<? extends Integer> collection10 = new ArrayList<String>();
+16     Collection<String> collection11 = new ArrayList<? extends String>();
+17     Collection collection12 = new ArrayList<String>();
+18   }
+19 }
+ Line 9: Object does not extend String. Line 10: String is not a superclass of Object. Line 13: ArrayList<?> can't be instantiated. Line 15: Integer does not extend String. Line 16: ArrayList<? extends String> can't be instantiated. Nested Classes Java Programming Generics Aggregate

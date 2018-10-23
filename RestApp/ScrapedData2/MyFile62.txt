@@ -1,0 +1,60 @@
+JavaBeans
+
+Event Handling Java Programming JavaBeans Canvas Navigate User Interface topic:( v • d • e ) Basic I/O Streams Event handling JavaBeans Canvas Graphics Drawing basic shapes Drawing complex shapes Drawing text Understanding gradients Applets Overview User Interface Event Listeners Graphics and Media Reusability comes at the core of any modern computer language's framework. It is often desirable to use components you previously built in recurring environments. In Rapid Application Development, these prove more helpful as you can drag them off a list of components and use it elsewhere in your project. Such level of reusability is added into the Java Programming language with the help of the JavaBeans architecture. JavaBeans are the mainstream Java component model, introduced in 1996 by Sun Microsystems. JavaBeans are defined as follows: "A JavaBean is a reusable software component that can be manipulated visually in a builder tool." Together with the component model, Sun released a simple visual composition tool, the BeanBox. It is mostly intended for experimenting with Beans rather than offering a professional IDE. For real world applications, one should better deploy on one of the Java IDEs like Visual Age or JBuilder that support the visual composition of JavaBeans. As we will see, JavaBeans do not essentially differ from standard Java classes, which makes the component model quite easy to use. What sets a JavaBean apart from normal Java classes is that a JavaBean follows the Oracle JavaBeans Standard (the term JavaBean or simply bean also refers to the instances of a JavaBean class). There is a set of features and conventions adopted for facilitating reuse: Presence of a no argument constructor; Support for persistence; Properties manipulated by getter and setter methods; Support for introspection; Events as the mechanism of communication between beans; Support for customization via property editors. The JavaBeans standard provides a framework for creating objects to be used by GUI tools, including Java development environments. But in more common usage, a bean is a serializable class that follows the JavaBeans naming conventions for its properties. These naming standards make it easy to use Java introspection. Implementation[edit] To follow these standards, the bean needs one or more properties abstractions which represent different state values of an object. A property has a name (a valid Java identifier) and a type (either a reference type, a primitive type or an array type). By default, the properties of a JavaBean class are inferred by the presence of either a getter method, a setter method, or both: A getter method which is used to obtain the value of the property from a bean. The name is usually of the form getPropertyName. For example, the getter method for the String property whiskey is public String getWhiskey(). For boolean properties (those whose type is boolean, the convention is to use the naming pattern isPropertyName. isDiscounted() would be the getter method for a boolean property named discounted. Thus, the method signature of most getters is public PropertyType getPropertyName() or public boolean isPropertyName(). A setter method which is used to assign a value to a bean's property. A setter method is a method of the form public void setPropertyName(PropertyType value). For the previous example, the setter could be invoked as setWhiskey("bourbon");. As per the JavaBeans standard, getters and setters defined as described above automatically determine the properties of the class. However, by creating java.beans.PropertyDescriptor classes, you can specify alternate implementations by explicitly declaring the property names and the getter and/or setter methods for each property. Properties are often implemented with private instance variables, but this is not required. A Simple JavaBean[edit] This is an example of a simple JavaBean type with the properties int age and String color. Code listing 9.12: Puppy.java  1 class Puppy implements java.io.Serializable {
+ 2 
+ 3   private static final long serialVersionUID = 348652158488L;
+ 4 
+ 5   private String color;
+ 6 
+ 7   private int age;
+ 8 
+ 9   public String getColor() {
+10     return color;
+11   }
+12 
+13   public void setColor(String color) {
+14     this.color = color;
+15   }
+16 
+17   public int getAge() {
+18     return age;
+19   }
+20 
+21   public void setAge(int age) {
+22     this.age = age;
+23   }
+24 }
+ Persistence[edit] The requirements for an object to be a bean is to define a public parameterless constructor, so that beans can be instantiated by builder tools in an uncomplicated way (In the Point bean, the parameterless constructor is given implicitly). Secondly, one of the interfaces java.io.Serializable or java.io.Externalizable need to be implemented. The interfaces do not prescribe the implementation of any methods, but are an approval, that the bean may be saved in persistent storage as in a file or database. In doing so, the bean can be restored after an application was shut down or transferred across networks. The ability to store state of a component in persistent storage is called persistence. Java offers a standard serialization mechanism, which makes it very easy to serialize objects. Alternatively, a component can be stored in a customized manner (e.g. in xml format) by implementing the Externalizable interface. Properties[edit] The properties of a bean are all private fields that are accessible and modifiable by public methods. These getter and setter methods should be marked as such by following a simple naming convention: for some property named, say, xxx there should be a getXxx() which returns the property value and a setXxx() which sets the property. Introspection[edit] In Java and J2EE programming, you can call a method on an object only if it is casted to a class or an interface that declares it. The structured definition of bean properties is very useful for comparing a single common property across several objects that are not and should not be related by inheritance. For example, a program may contain both a bean representing a company's employees, and another containing a list of buildings that a company occupies. A programmer writing a function called listAssetNames() wants to write a simple way of getting the field "name" from several beans that can get the field from both Employee and Building beans, and that can be easily adapted to get the same field from other types of beans that may not be written yet. While this could be done by rewriting both Employee and Building so that they each inherit from one class named NamedObject, or by creating a NamedObject interface, both methods have their own problems. Using inheritance is limiting, as each child class can only inherit from one parent class, which limits the number of different classes that can share properties, as well as the number of common properties that can be shared. Furthermore, using inheritance to express relationships other than a simple "is-a" relationship can be confusing, as can looking through dozens of class definitions to find where a single "dumb" getter function is implemented. Creating an interface fixes the problems caused by the multiple inheritance rule, as a class can use any number of interfaces, but it still requires every shared property to be explicitly spelled out. The simplest, most elegant way to deal with this type of relationship is to read the bean properties using introspection. The jakarta BeanUtils package is a common way of handling objects that need to be related in this way, as it takes advantage of the regularity of JavaBean naming conventions. Code listing 9.13: Get property from a JavaBean  1 public static Object getProperty(Object o, String propertyName) {
+ 2    if (o == null ||
+ 3        propertyName == null ||
+ 4        propertyName.length() < 1) {
+ 5       return null;
+ 6    }
+ 7    // Based on the property name build the getter method name
+ 8    String methodName = "get" +
+ 9                       propertyName.substring(0,1).toUpperCase() +
+10                       propertyName.substring(1);
+11    Object property = null;
+12    try {
+13       java.lang.Class c = o.getClass();
+14       java.lang.reflect.Method m = c.getMethod(methodName, null);
+15       property = m.invoke(o, null);
+16    } catch (NoSuchMethodException e) {
+17      // Handle exception
+18    }  catch (SecurityException e) {
+19      // No permission; Handle exception
+20    }
+21 return property;
+22 }
+ or Code listing 9.14: Use Apache Commons BeanUtils  1 import org.apache.commons.beanutils.PropertyUtils;
+ 2 
+ 3 try {
+ 4   Object myValue = PropertyUtils.getSimpleProperty(o, propertyName);
+ 5 } catch (IllegalAccessException e) {
+ 6   // Handle exception
+ 7 } catch (InvocationTargetException e) {
+ 8   // Handle exception
+ 9 } catch (NoSuchMethodException e) {
+10   // Handle exception
+11 }
+ Events[edit] JavaBeans interact with each other by means of events. Events are notifications, a component can give to other components, that something interesting has happened. An example for an event might be a mouse click on a button or the closing of a window. Beans can be source and target of events. To be informed about an event, a bean has to register at another Bean as a listener. The Java event model realizes the observer design pattern with the effect that the inter-component coupling is reduced. Method calls require tight coupling, as caller and receiver need to know each other at compile time, while with events all communication happens solely via interfaces. A special kind of event are PropertyChangeEvents. They are used to restrict some properties to take only specific values, for example for a month integer values between 1 and 12. Every time, such a bound property is modified, notifications to all registered PropertyChangeListeners will be send. Customization[edit] Customization is done via Property Editors. A property editor is a tool for customizing at design time a particular property type. Property editors are activated from so-called property sheets, which display all properties of a bean. If a property is selected for customization, the property sheet finds out the type of the property, displays the appropriate property editor with the property's current value. Additional Remarks[edit] A big strength of the JavaBean component model is that it is designed for simplicity. Developing JavaBeans is very simple, because a lot of behavior (like the platform independence or packaging mechanism) is supported in the Java Programming Language by default. However, one can optionally equip beans with additional objects like BeanInfos or custom PropertyEditors to use the component model in a more flexible way. A second facility is that Sun designed the whole Swing GUI library according to the JavaBeans component model. Thereby Swing components can easily be composed in visual builder tools. However, JavaBeans do not realize all features of a component model. A drawback is that JavaBeans are restricted to the Java programming language, while an important goal of components is the independence of an implementation language. Recommended readings[edit] Learning JavaTM, Niemeyer, P. and Knudsen, J., 3rd Edition, 2005, O'Reilly: Sebastopol, CA. pp.751-786 Event Handling Java Programming JavaBeans Canvas

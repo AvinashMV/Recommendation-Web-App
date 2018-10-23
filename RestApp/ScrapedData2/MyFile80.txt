@@ -1,0 +1,31 @@
+Regular Expressions
+
+Database Programming Java Programming Regular Expressions Libraries, extensions and frameworks Navigate Advanced topic: ( v • d • e ) Networking Database programming Regular Expressions Libraries, extensions and frameworks 3D programming Java Native Interface Invoking C Byte Code The regular expressions (regex) are provided by the package java.util.regex. Researches[edit] The Pattern class offers the function matches which returns true if an expression is found into a string. For example, this script returns the unknown word preceding a known word: import java.util.regex.Pattern;
+public class Regex {
+	public static void main(String[] args) {
+		String s = "Test Java regex for Wikibooks.";
+		System.out.println(Pattern.matches("[a-z]* Wikibooks",s));
+    }
+}
+// Displays: "for Wikibooks"
+ The Matcher class allows to get all matches for a given expression, with different methods: find(): find the next result. group(): displays the result. For example, this script displays the HTML b tags contents: import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
+public class Regex {
+	public static void main(String[] args) {
+		String s = "Test <i>Java</i> <b>regex</b> for <b>Wikibooks</b>.";
+		Pattern p = Pattern.compile("<b>([^<]+)</b>");
+		Matcher m = p.matcher(s);
+		while(m.find()) {
+			System.out.println(m.group());
+			System.out.println(m.group(1));
+		}
+	}
+}
+/* Displays:
+ <b>regex</b>
+ regex
+ <b>Wikibooks</b>
+ Wikibooks
+*/
+ Replacements[edit] This section is a stub. You can help Wikibooks by expanding it.

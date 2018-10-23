@@ -1,0 +1,81 @@
+/*---------------------------------------------
+
+General settings
+-----------------------------------------------*/
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html{
+    font-family: 'Lato','Arial',sans-serif;
+    font-weight: 300;
+    font-size: 20px;
+    text-space: 2px;
+}
+
+h1{
+    font-weight: 100;
+    font-size: 200%;
+    letter-spacing: 2.5px;
+    word-spacing: 4.5px;
+}
+
+h3{
+    font-weight: 300;
+    font-size: 110%;
+    letter-spacing: 2.5px;
+    word-spacing: 4.5px;
+}
+
+body{
+
+}
+
+/*---------------------------------------------
+
+Header settings
+-----------------------------------------------*/
+header{
+    color: #000;
+    height: 60px;
+    padding-top: 2%;
+    padding-bottom: 10%;
+}
+
+.hr-custom{
+    height: 1px;
+    width: 66%;
+    background-color: #fa5;
+    margin: 0 auto;
+
+}
+
+
+/*---------------------------------------------
+
+Body  settings
+-----------------------------------------------*/
+
+.row div{
+    padding: 2% 2%;
+}
+.post-block{
+    background-color: #fff;
+    height: 400px;
+    width: auto;
+    border-radius: 10%;
+    border: 1px solid #000;
+    box-shadow: 2px 2px 2px #000;
+}
+
+
+.post-block-content{
+    color: #000;
+}
+
+.results-block{
+    color: #000;
+}

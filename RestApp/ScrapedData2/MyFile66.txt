@@ -1,0 +1,15 @@
+Drawing complex shapes
+
+Drawing shapes Java Programming Drawing complex shapes Drawing text Navigate User Interface topic:( v • d • e ) Basic I/O Streams Event handling JavaBeans Canvas Graphics Drawing basic shapes Drawing complex shapes Drawing text Understanding gradients Applets Overview User Interface Event Listeners Graphics and Media Code listing 9.4: Drawing complex shapes public class Hello {
+    JLabel label = newJLabel("Hello, Mundo!");
+    JFrame frame = new JFrame("BK*");
+    frame.add(label);
+
+    frame.setSize(300, 300);
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.setVisible(true);
+    frame.setLocationRelativeTo(null);
+    frame.toFront();
+    }
+}
+ Drawing shapes Java Programming Drawing complex shapes Drawing text

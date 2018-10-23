@@ -1,0 +1,14 @@
+Drawing text
+
+Drawing complex shapes Java Programming Drawing text Understanding gradients Navigate User Interface topic:( v • d • e ) Basic I/O Streams Event handling JavaBeans Canvas Graphics Drawing basic shapes Drawing complex shapes Drawing text Understanding gradients Applets Overview User Interface Event Listeners Graphics and Media Code listing 9.5: Drawing text public class MyCanvas extends Canvas {
+    public void init() {
+        setFont("Times New Roman", Font.PLAIN, 24);
+        setColor(Color.white);
+        setBackGroundColor(Color.black);
+        setLayout(new GridLayout());
+ 
+        add(label);
+        add(button);
+    }
+}
+ Drawing complex shapes Java Programming Drawing text Understanding gradients

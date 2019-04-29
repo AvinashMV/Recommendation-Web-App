@@ -4,6 +4,7 @@ In this project is about a Recommendation System that suggest a topic to read fr
 
 Java programming wiki book site (https://en.wikibooks.org/wiki/Java_Programming) is crawled / scraped and indexed through Apache Lucene. Given data set is matched/searched against Java wiki book. Top 10 results are displayed in the web page.
 
+
 How did I measure the success?
 I have used different sets of queries as a input to test. Webapp correctly suggested closely related top 10 topics to read. Out of 10 trails, 9 times topics suggested were appropriate to the given input.  
 

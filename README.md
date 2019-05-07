@@ -1,8 +1,8 @@
 # RecommendationSystem
 
-In this project is about a Recommendation System that suggest a topic to read from Java Programming Wiki website, given a text related to Java. This is implemented with Apache Lucene, Java Spring boot at backend, and AJAX JavaScript at the front end.
+This project is about a Recommendation System that suggest a topic to read from Java Programming Wiki website, given a text related to Java. This is implemented with Apache Lucene, Java Spring boot at backend, and AJAX JavaScript at the front end.
 
-Java programming wiki book site (https://en.wikibooks.org/wiki/Java_Programming) is crawled / scraped and indexed through Apache Lucene. Given data set is matched/searched against Java wiki book. Top 10 results are displayed in the web page.
+Java programming wiki book site (https://en.wikibooks.org/wiki/Java_Programming) is crawled / scraped and indexed through Apache Lucene. Given data set is matched/searched against Java wiki book. An API is generated through Spring Boot, it is accessed and top 10 results are displayed in the web page through Ajax Javascript. 
 
 
 How did I measure the success: 
